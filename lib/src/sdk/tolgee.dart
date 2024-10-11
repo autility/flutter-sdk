@@ -59,4 +59,8 @@ class Tolgee {
   static void highlightTolgeeWidgets() {
     TolgeeTranslationsStrategy.instance.toggleTranslationEnabled();
   }
+
+  static String translate(String key) {
+    return TolgeeTranslationsStrategy.instance.translate(key);
+  }
 }
