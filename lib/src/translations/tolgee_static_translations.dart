@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:tolgee/src/api/models/tolgee_key_model.dart';
 import 'package:tolgee/src/api/models/tolgee_translation_model.dart';
 import 'package:tolgee/src/api/tolgee_project_language.dart';
+import 'package:tolgee/src/translations/tolgee_remote_translations.dart';
 import 'package:tolgee/src/translations/tolgee_translations.dart';
 
 class TolgeeStaticTranslations implements TolgeeTranslations {
@@ -18,8 +19,8 @@ class TolgeeStaticTranslations implements TolgeeTranslations {
 
     final tolgeeFiles = manifest
         .listAssets()
-        .where((element) => element.startsWith('lib/tolgee'))
-        .where((element) => element.endsWith('json'))
+        .where((element) => element.contains('translations'))
+        .where((element) => element.endsWith('.json'))
         .toList();
 
     final futures = tolgeeFiles.map((e) async {
@@ -76,7 +77,7 @@ class TolgeeStaticTranslations implements TolgeeTranslations {
 
     instance._currentLanguage = Locale(
       currentLanguage ??
-      projectLanguages.values.firstWhere((element) => element.base).tag,
+          projectLanguages.values.firstWhere((element) => element.base).tag,
     );
     instance._projectLanguages = projectLanguages;
     instance._translations = translations0;
@@ -94,7 +95,7 @@ class TolgeeStaticTranslations implements TolgeeTranslations {
   Locale? get currentLanguage => _currentLanguage;
 
   @override
-  Future <void> setCurrentLanguage(Locale locale) async{
+  Future<void> setCurrentLanguage(Locale locale) async {
     _currentLanguage = locale;
   }
 
@@ -111,9 +112,10 @@ class TolgeeStaticTranslations implements TolgeeTranslations {
     }
 
     return _translations
-            .firstWhere((element) => element.keyName == key)
-            .translations[languageCode]
-            ?.text;
+        .where((element) => element.keyName == key)
+        .firstOrNull
+        ?.translations[languageCode]
+        ?.text;
   }
 
   @override
